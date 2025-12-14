@@ -25,15 +25,16 @@ Para ejecutar este proyecto, necesitas:
 
 ## 📦 Instalación
 
-Sigue estos pasos para poner en marcha el proyecto:
+Este proyecto está diseñado para ser instalado como un nuevo proyecto de Composer. Sigue estos pasos:
 
-1.  **Clona el repositorio:**
+1.  **Crea el proyecto usando Composer:**
     ```bash
-    git clone git@github.com:TimeFinanceHub/administradorWeb-de-proyectos.git
-    cd administradorWeb-de-proyectos
+    composer create-project rg-glez-tfh-syntax-sanctuary/admin-of-pjs <nombre-de-tu-proyecto>
+    cd <nombre-de-tu-proyecto>
     ```
+    Si ya has clonado el repositorio directamente, ve al paso 2.
 
-2.  **Instala las dependencias de Composer:**
+2.  **Instala las dependencias de Composer (si no usaste `create-project` o si necesitas actualizar):**
     ```bash
     composer install
     ```
