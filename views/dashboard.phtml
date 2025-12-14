@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RG012 - Dashboard</title>
+    
+    <link rel="icon" type="image/png" href="img-logo/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/svg+xml" href="img-logo/favicon.svg" />
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="img-logo/apple-touch-icon.png" />
+<link rel="manifest" href="img-logo/site.webmanifest" />
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #27ae60;
+            --bg-color: #f4f4f9;
+            --text-color: #333;
+            --white: #ffffff;
+        }
+
+        body { 
+            font-family: 'Courier New', monospace; 
+            background: var(--bg-color); 
+            color: var(--text-color); 
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container { 
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto; 
+            background: var(--white); 
+            padding: 40px; 
+            border-radius: 12px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
+            box-sizing: border-box;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 20px;
+        }
+
+        .brand-logo {
+            max-width: 120px;
+            height: auto;
+            display: block;
+            margin: 0 auto 15px auto;
+        }
+
+        h1 { 
+            font-size: 1.5rem; 
+            margin: 0; 
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input, textarea, button { 
+            width: 100%; 
+            padding: 15px; 
+            margin: 10px 0; 
+            box-sizing: border-box; 
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        button { 
+            background: var(--primary-color); 
+            color: var(--white); 
+            border: none; 
+            cursor: pointer; 
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        button:hover { background: #34495e; }
+
+        /* BLOCKCHAIN UI */
+        .block { 
+            background: #ecf0f1; 
+            border-left: 5px solid var(--accent-color); 
+            padding: 20px; 
+            margin-bottom: 20px; 
+            word-break: break-all;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .meta-info {
+            font-size: 0.85rem;
+            color: #555;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+        
+        .hash-container { 
+            font-size: 0.75em; 
+            color: #7f8c8d; 
+            background: #eef;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+
+        .alert { color: #e74c3c; text-align: center; background: #fadbd8; padding: 10px; border-radius: 4px; }
+        .integrity-ok { color: var(--accent-color); font-weight: bold; text-align: center; margin: 20px 0; }
+        .integrity-bad { color: #c0392b; font-weight: bold; text-align: center; margin: 20px 0; }
+        
+        .user-header {
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .logout-link {
+             color:#e74c3c; text-decoration:none; border: 1px solid #e74c3c; padding: 5px 10px; border-radius: 4px;
+        }
+        
+        /* Estilos para botones de Mantenimiento */
+
+        .btn {
+            padding: 10px 15px;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            display: inline-flex; /* Para centrar íconos y texto */
+            align-items: center;
+            gap: 8px; /* Espacio entre ícono y texto */
+            border: 1px solid transparent;
+        }
+        
+        /* 1. Botón Peligroso (Reiniciar Cadena) */
+        .btn-danger {
+            background-color: #dc3545; /* Rojo fuerte */
+            color: #ffffff;
+            border-color: #dc3545;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c82333; /* Rojo más oscuro al pasar el ratón */
+            border-color: #bd2130;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Estilos para el Contenedor de Mantenimiento */
+
+        .maintenance-actions-container {
+            /* Diseño de la Caja */
+            padding: 20px;
+            margin-top: 30px;
+            border: 1px solid #ff4d4d; /* Borde rojo sutil para denotar peligro */
+            border-radius: 8px;
+            background-color: #ffe6e6; /* Fondo muy claro para distinguirlo */
+            
+            /* Layout */
+            display: flex;
+            flex-wrap: wrap; /* Permite que los botones se envuelvan en pantallas pequeñas */
+            gap: 15px; /* Espacio entre los botones */
+            align-items: center;
+        }
+        
+        .maintenance-actions-container h3 {
+            width: 100%; /* El título ocupa todo el ancho */
+            color: #dc3545; /* Color de peligro */
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            border-bottom: 1px solid #ff9999;
+            padding-bottom: 5px;
+        }
+
+        /* MEDIA QUERIES */
+        @media (max-width: 480px) {
+            body { padding: 10px; }
+            .container { padding: 15px; width: 100%; box-shadow: none; }
+            h1 { font-size: 1.2rem; }
+            .brand-logo { max-width: 100px; }
+            .user-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <img src="rg012-logo.png" alt="Logo RG012" class="brand-logo">
+        <h1>Dashboard - Proyectos Express</h1>
+    </header>
+    
+    <?php if (!empty($message)): ?><p class="alert" style="background: #e6fff1; color: var(--accent-color);"><?= htmlspecialchars($message) ?></p><?php endif; ?>
+
+    <div id="dashboard">
+        <div class="user-header">
+            <h3>Hola, <?= htmlspecialchars($_SESSION['user_name']) ?></h3>
+            <a href="index.php?action=logout" class="logout-link">Cerrar Sesión</a>
+        </div>
+
+        <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #eee; margin-bottom: 30px;">
+            <h4 style="margin-top:0;">➕ Nuevo Proyecto Express (g012)</h4>
+            <form action="index.php?action=add_project" method="POST">
+                <textarea name="project_data" rows="4" placeholder="Escribe tu idea aquí para encriptarla..." required></textarea>
+                <button type="submit">Guardar en Blockchain</button>
+            </form>
+        </div>
+        
+        <div style="background: #e9f5ff; padding: 15px; border-radius: 8px; border: 1px solid #cceeff; margin-bottom: 30px;">
+    <h4 style="margin-top:0; color: var(--primary-color);">🔍 Filtrar Proyectos (R012)</h4>
+    <form action="index.php" method="GET" style="display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end;">
+        
+        <div style="flex-grow: 1;">
+            <label for="status" style="font-size: 0.9em; display: block; margin-bottom: 5px;">Filtrar por Estado:</label>
+            <select name="status" id="status" style="width: 100%; padding: 10px;">
+                <option value="all" <?= $currentStatusFilter === 'all' ? 'selected' : '' ?>>Todos (No Eliminados)</option>
+                <option value="active" <?= $currentStatusFilter === 'active' ? 'selected' : '' ?>>Activo</option>
+                <option value="in_progress" <?= $currentStatusFilter === 'in_progress' ? 'selected' : '' ?>>En Progreso</option>
+                <option value="completed" <?= $currentStatusFilter === 'completed' ? 'selected' : '' ?>>Completado</option>
+                <option value="archived" <?= $currentStatusFilter === 'archived' ? 'selected' : '' ?>>Archivado</option>
+            </select>
+        </div>
+
+        <div style="flex-grow: 1;">
+            <label for="tag" style="font-size: 0.9em; display: block; margin-bottom: 5px;">Filtrar por Etiqueta:</label>
+            <select name="tag" id="tag" style="width: 100%; padding: 10px;">
+                <option value="">-- Sin Etiqueta --</option>
+                <?php foreach ($allTags as $tag): ?>
+                    <option value="<?= htmlspecialchars($tag['name']) ?>" 
+                            <?= $currentTagFilter === $tag['name'] ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($tag['name']) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        
+        <input type="hidden" name="action" value="home"> <button type="submit" style="flex-grow: 0; padding: 10px 20px; margin-top: 0; background: #3498db;">Aplicar Filtros</button>
+        <a href="index.php" style="flex-grow: 0; padding: 10px 20px; background: #95a5a6; color: white; text-decoration: none; border-radius: 6px; margin-top: 0; text-align: center;">Limpiar</a>
+    </form>
+</div>
+
+        <h4 style="text-align:center;">⛓️ Tu Cadena de Bloques</h4>
+        
+        <section class="maintenance-actions-container">
+    <h3>⚙️ Mantenimiento de la Cadena</h3>
+    
+    <a 
+        href="index.php?action=reset_chain" 
+        class="btn btn-danger" 
+        onclick="return confirm('ATENCIÓN: ¿Estás ABSOLUTAMENTE seguro de que quieres REINICIAR la cadena de bloques?');"
+    >
+        <i class="fas fa-sync-alt"></i> Reiniciar Cadena
+    </a>
+</section>
+        
+        <?php 
+            echo $isSecure ? "<div class='integrity-ok'>✓ INTEGRIDAD DE LA CADENA: VERIFICADA</div>" : "<div class='integrity-bad'>⚠ ALERTA CRÍTICA: DATOS ALTERADOS</div>";
+        ?>
+        
+        <?php foreach ($blocks as $block): ?>
+            <div class="block">
+                <div class="meta-info">
+                    <span><strong>ID:</strong> #<?= $block['block_index'] ?></span>
+
+                    <span style="font-weight: bold; color: var(--primary-color);">
+                        <?php if ($block['alias']): ?>
+                            <?= htmlspecialchars($block['alias']) ?>
+                            (Status: <?= ucfirst($block['status']) ?>)
+                        <?php else: ?>
+                            [Proyecto sin alias]
+                        <?php endif; ?>
+                    </span>
+
+                    <span style="font-size: 0.85em;">
+                        <a href="index.php?action=edit&id=<?= $block['id'] ?>"
+                            style="color: var(--primary-color); text-decoration: none; margin-right: 15px;">
+                            [Editar]
+                        </a>
+                        <a href="index.php?action=delete&id=<?= $block['id'] ?>"
+                            style="color:#c0392b; text-decoration:none;"
+                            onclick="return confirm('¿Estás seguro de que quieres marcar este proyecto como eliminado?');">
+                            [Eliminar]
+                        </a>
+
+                        <a href="index.php?action=tasks&block_id=<?= $block['id'] ?>"
+                            style="color: #3498db; text-decoration: none; margin-right: 15px;">
+                            [Tareas G013]
+                        </a>
+
+                        <a href="index.php?action=reportes"
+                            style="color: #3498db; text-decoration: none; margin-right: 15px;">
+                            [Reportes]
+                        </a>
+                                <a href="index.php?action=upload_media&block_id=<?= $block['id'] ?>"
+            style="color: #f39c12; text-decoration: none; margin-right: 15px;">
+            [Media G016]
+        </a>
+                    </span>
+                </div>
+
+                <p style="font-size: 1.1em; font-weight: 500;">
+                    <?= htmlspecialchars($block['data']) ?>
+                </p>
+                
+                <?php if (!empty($block['tags'])): ?>
+                    <div style="margin-top: 10px; font-size: 0.85em; margin-bottom: 10px;">
+                        <strong>Etiquetas:</strong>
+                        <?php foreach ($block['tags'] as $tag): ?>
+                            <span style="display: inline-block; background: #3498db; color: white; padding: 2px 8px; border-radius: 4px; margin-right: 5px;">
+                                <?= htmlspecialchars($tag['name']) ?>
+                            </span>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+                <div class="hash-container">
+                    <strong>Hash Previo:</strong><br> <?= $block['previous_hash'] ?><br><br>
+                    <strong>Hash Actual:</strong><br> <?= $block['hash'] ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+
+</div>
+
+</body>
+</html>

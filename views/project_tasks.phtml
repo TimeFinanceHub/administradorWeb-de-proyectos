@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G013 - Tareas de <?= htmlspecialchars($block['alias'] ?? 'Proyecto') ?></title>
+    <style>
+        /* [Aquí irían tus estilos CSS del dashboard, o una importación] */
+        :root { --primary-color: #2c3e50; --accent-color: #27ae60; --bg-color: #f4f4f9; --text-color: #333; --white: #ffffff; }
+        body { font-family: 'Courier New', monospace; background: var(--bg-color); color: var(--text-color); margin: 0; padding: 20px; line-height: 1.6; }
+        .container { width: 100%; max-width: 900px; margin: 0 auto; background: var(--white); padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); box-sizing: border-box; }
+        input, textarea, button, select { width: 100%; padding: 10px; margin: 10px 0; box-sizing: border-box; border: 1px solid #ddd; border-radius: 6px; font-family: inherit; }
+        button { background: var(--primary-color); color: var(--white); border: none; cursor: pointer; font-weight: bold; transition: background 0.3s; }
+        button:hover { background: #34495e; }
+        .task-list { margin-top: 20px; }
+        .task-item { background: #f9f9f9; padding: 15px; border-left: 3px solid #ccc; margin-bottom: 10px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; }
+        .task-item.completed { border-left-color: var(--accent-color); background: #e8f9ed; text-decoration: line-through; color: #777; }
+        .task-meta { display: flex; gap: 10px; align-items: center; }
+        .task-desc { flex-grow: 1; margin-right: 20px; word-break: break-word; }
+        .status-select { width: auto; padding: 5px; margin: 0; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header style="text-align: center; border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 30px;">
+        <a href="index.php" style="float: left; text-decoration: none; color: #333;">&larr; Volver al Dashboard</a>
+        <h1 style="font-size: 1.5rem; color: var(--primary-color); margin-top: 0;">G013 - Tareas de Dependencia</h1>
+        <h2 style="font-size: 1.2rem; color: #3498db; margin: 0;"><?= htmlspecialchars($block['alias'] ?? '[Proyecto Desconocido]') ?></h2>
+    </header>
+
+    <?php if (!empty($message)): ?><p style="background: #e6fff1; color: var(--accent-color); padding: 10px; border-radius: 4px; text-align: center;"><?= htmlspecialchars($message) ?></p><?php endif; ?>
+
+    <div style="background: #ecf0f1; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+        <h3 style="margin-top: 0;">➕ Agregar Nueva Tarea</h3>
+        <form action="index.php?action=add_task" method="POST">
+            <input type="hidden" name="block_id" value="<?= $block['id'] ?>">
+            <textarea name="description" rows="3" placeholder="Describe la dependencia o tarea... (Ej: Configurar la DB de desarrollo)" required></textarea>
+            <button type="submit">Añadir Tarea</button>
+        </form>
+    </div>
+
+    <h3 style="text-align: center;">📋 Dependencias Pendientes (<?= count($tasks) ?>)</h3>
+    <div class="task-list">
+        <?php if (empty($tasks)): ?>
+            <p style="text-align: center; color: #777;">No hay tareas asociadas a este proyecto inmutable.</p>
+        <?php endif; ?>
+
+        <?php foreach ($tasks as $task): ?>
+            <div class="task-item <?= $task['status'] === 'completed' ? 'completed' : '' ?>">
+                
+                <div class="task-desc">
+                    <?= htmlspecialchars($task['description']) ?>
+                    <span style="display: block; font-size: 0.7em; color: #999;">Creada: <?= date('Y-m-d H:i', strtotime($task['created_at'])) ?></span>
+                </div>
+                
+                <div class="task-meta">
+                    <form action="index.php?action=update_task_status" method="POST" style="margin: 0;">
+                        <input type="hidden" name="task_id" value="<?= $task['id'] ?>">
+                        <input type="hidden" name="block_id" value="<?= $block['id'] ?>">
+                        <select name="status" class="status-select" onchange="this.form.submit()">
+                            <?php foreach ($status_options as $option): ?>
+                                <option value="<?= $option ?>" <?= $task['status'] === $option ? 'selected' : '' ?>>
+                                    <?= ucfirst(str_replace('_', ' ', $option)) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </form>
+                    
+                    <a href="index.php?action=delete_task&task_id=<?= $task['id'] ?>&block_id=<?= $block['id'] ?>" 
+                       style="color: #c0392b; text-decoration: none; font-size: 0.8em;"
+                       onclick="return confirm('¿Eliminar esta tarea de forma permanente?');">
+                        [X]
+                    </a>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</div>
+
+</body>
+</html>

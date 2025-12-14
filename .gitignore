@@ -1,0 +1,14 @@
+# Composer
+vendor/
+composer.lock
+
+# Environment
+.env
+
+# Uploads
+uploads/
+
+# IDE / OS
+.idea/
+.vscode/
+*.DS_Store
