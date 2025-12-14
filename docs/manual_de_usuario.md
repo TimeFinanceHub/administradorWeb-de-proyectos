@@ -64,21 +64,21 @@ Si ya no necesitas un proyecto, puedes marcarlo como eliminado. Esto no lo borra
 1.  En la lista de proyectos, haz clic en el enlace **`[Eliminar]`** del proyecto correspondiente.
 2.  Confirma la acción en la ventana emergente.
 
-## 4. Gestión de Tareas (Módulo G013)
+## 4. Gestión de Tareas
 
 Puedes desglosar cada proyecto en tareas más pequeñas.
 
-1.  Busca el proyecto deseado en el dashboard y haz clic en el enlace **`[Tareas G013]`**.
+1.  Busca el proyecto deseado en el dashboard y haz clic en el enlace **`[Tareas]`**.
 2.  En esta página, verás la lista de tareas del proyecto y un formulario para añadir nuevas.
 3.  **Para añadir una tarea:** Escribe la descripción y haz clic en **"Añadir Tarea"**.
 4.  **Para cambiar el estado de una tarea:** Usa el menú desplegable junto a cada tarea y haz clic en **"Actualizar"**.
 5.  **Para eliminar una tarea:** Haz clic en el icono de la papelera junto a la tarea que deseas borrar.
 
-## 5. Gestión de Archivos (Módulo G016)
+## 5. Gestión de Archivos
 
 Puedes adjuntar archivos importantes a tus proyectos.
 
-1.  En el dashboard, haz clic en el enlace **`[Media G016]`** del proyecto correspondiente.
+1.  En el dashboard, haz clic en el enlace **`[Archivos]`** del proyecto correspondiente.
 2.  En esta página verás los archivos ya subidos y un formulario para subir uno nuevo.
 3.  Haz clic en **"Seleccionar archivo"**, elige el fichero de tu ordenador (solo se permiten PNG y MP4) y haz clic en **"Subir Archivo"**.
 4.  El archivo aparecerá en la lista. Puedes eliminarlo haciendo clic en el enlace **`[Eliminar]`**.

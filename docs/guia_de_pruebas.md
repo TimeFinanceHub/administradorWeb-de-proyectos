@@ -62,9 +62,9 @@ Esta guía describe los pasos para probar manualmente las funcionalidades clave 
 
 **Objetivo:** Verificar que las tareas se pueden añadir, actualizar y eliminar.
 
-1.  **Acción:** Inicia sesión y ve al proyecto "Campaña 2025" haciendo clic en `[Tareas G013]`.
+1.  **Acción:** Inicia sesión y ve al proyecto "Campaña 2025" haciendo clic en el enlace **`[Tareas]`**.
 2.  **Acción (Crear):** Añade dos tareas: "Definir KPIs" y "Diseñar creatividades".
-3.  **Resultado Esperado:** Ambas tareas deben aparecer en la lista con el estado "pending".
+3.  **Resultado Esperado:** Ambas tareas deben aparecer en la lista con el estado "pendiente".
 4.  **Acción (Actualizar):** Cambia el estado de la tarea "Definir KPIs" a "completed" y haz clic en "Actualizar".
 5.  **Resultado Esperado:** El estado de la tarea debe cambiar en la lista.
 6.  **Acción (Eliminar):** Elimina la tarea "Diseñar creatividades" haciendo clic en el icono de la papelera.
@@ -76,7 +76,7 @@ Esta guía describe los pasos para probar manualmente las funcionalidades clave 
 
 **Objetivo:** Verificar que se pueden subir y eliminar archivos.
 
-1.  **Acción:** Ve al dashboard. En el proyecto "Campaña 2025", haz clic en `[Media G016]`.
+1.  **Acción:** Ve al dashboard. En el proyecto "Campaña 2025", haz clic en el enlace **`[Archivos]`**.
 2.  **Acción (Subir):**
     *   Sube un archivo de imagen (PNG).
     *   Sube un archivo de video (MP4).
@@ -106,8 +106,8 @@ Esta guía describe los pasos para probar manualmente las funcionalidades clave 
 
 1.  **Acción (Simular Corrupción):**
     *   Accede a tu herramienta de base de datos (como phpMyAdmin o DBeaver).
-    *   Ve a la tabla `blocks`.
-    *   Edita manualmente el campo `data` de cualquier bloque y guarda el cambio.
+    *   Ve a la tabla `bloques`.
+    *   Edita manualmente el campo `datos` de cualquier bloque y guarda el cambio.
 2.  **Acción:** Vuelve al dashboard de la aplicación y recarga la página.
 3.  **Resultado Esperado:** Deberías ver un mensaje de advertencia: "⚠ ALERTA CRÍTICA: DATOS ALTERADOS".
 4.  **Acción (Reiniciar Cadena):**

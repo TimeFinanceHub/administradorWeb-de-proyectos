@@ -1,130 +1,142 @@
 #!/bin/bash
 
-# Este script configura la base de datos y las tablas para el proyecto.
-#
-# USO:
-# 1. Asegúrate de tener el cliente de línea de comandos de MySQL instalado.
-# 2. Edita las variables DB_USER, DB_PASS, y DB_NAME a continuación si no estás utilizando los valores por defecto.
-# 3. Opcionalmente, puedes crear un archivo .env y el script lo usará.
-# 4. Ejecuta el script: ./setup.sh
+# Este script configura la base de datos y las tablas para el proyecto de forma interactiva.
 
-# --- Configuración ---
-DB_USER="admin"
-DB_PASS="admin"
-DB_NAME="project_db"
-DB_HOST="localhost"
+# --- Banner de Bienvenida ---
+echo "======================================================"
+echo " Asistente de Configuración del Proyecto AdminOfPjs "
+echo "======================================================"
+echo
+
+# --- Configuración por Defecto ---
+DB_USER_DEFAULT="proyecto_user"
+DB_PASS_DEFAULT="password_seguro_123"
+DB_NAME_DEFAULT="proyecto_db"
+DB_HOST_DEFAULT="localhost"
 
 # --- Script ---
+echo "Este script te guiará para configurar la base de datos."
+echo "Puedes presionar Enter para aceptar los valores por defecto."
+echo
 
-# Leer desde .env si existe
-if [ -f .env ]; then
-    export $(cat .env | sed 's/#.*//g' | xargs)
-    DB_USER=${DB_USERNAME:-$DB_USER}
-    DB_PASS=${DB_PASSWORD:-$DB_PASS}
-    DB_NAME=${DB_DATABASE:-$DB_NAME}
-    DB_HOST=${DB_HOST:-$DB_HOST}
-fi
+# --- Recopilar Información del Usuario ---
+read -p "Introduce el nombre de host de la DB [defecto: $DB_HOST_DEFAULT]: " DB_HOST
+DB_HOST=${DB_HOST:-$DB_HOST_DEFAULT}
+
+read -p "Introduce el nombre para la nueva base de datos [defecto: $DB_NAME_DEFAULT]: " DB_NAME
+DB_NAME=${DB_NAME:-$DB_NAME_DEFAULT}
+
+read -p "Introduce el nombre para el nuevo usuario de la DB [defecto: $DB_USER_DEFAULT]: " DB_USER
+DB_USER=${DB_USER:-$DB_USER_DEFAULT}
+
+read -sp "Introduce la contraseña para el nuevo usuario '$DB_USER' [defecto: $DB_PASS_DEFAULT]: " DB_PASS
+DB_PASS=${DB_PASS:-$DB_PASS_DEFAULT}
+echo
+echo
+
+# --- Guardar en .env ---
+echo "Guardando configuración en el archivo .env..."
+echo "DB_HOST=$DB_HOST" > .env
+echo "DB_DATABASE=$DB_NAME" >> .env
+echo "DB_USERNAME=$DB_USER" >> .env
+echo "DB_PASSWORD=$DB_PASS" >> .env
+echo "Configuración guardada."
+echo
+
+# --- Interacción con MySQL ---
+read -sp "Por favor, introduce la contraseña del usuario 'root' de MySQL para continuar: " MYSQL_ROOT_PASS
+echo
+echo
 
 echo "--- Iniciando configuración de la base de datos ---"
 echo "Host: $DB_HOST"
-echo "Usuario: $DB_USER"
-echo "Base de datos: $DB_NAME"
+echo "Usuario a crear: $DB_USER"
+echo "Base de datos a crear: $DB_NAME"
 
 # SQL para crear la base de datos y el usuario
 SQL_CREATE_DB_AND_USER="
-CREATE DATABASE IF NOT EXISTS \
-`$DB_NAME` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS \`$DB_NAME\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE USER IF NOT EXISTS '$DB_USER'@'$DB_HOST' IDENTIFIED BY '$DB_PASS';
-GRANT ALL PRIVILEGES ON \
-`$DB_NAME`.* TO '$DB_USER'@'$DB_HOST';
+GRANT ALL PRIVILEGES ON \`$DB_NAME\`.* TO '$DB_USER'@'$DB_HOST';
 FLUSH PRIVILEGES;
 "
 
-# SQL para crear las tablas
+# SQL para crear las tablas (traducido)
 SQL_CREATE_TABLES="
-USE \
-`$DB_NAME`;
+USE \`$DB_NAME\`;
 
-CREATE TABLE IF NOT EXISTS \
-`users` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `name` VARCHAR(255) NOT NULL,
-  `email` VARCHAR(255) NOT NULL UNIQUE,
-  `phone` VARCHAR(50),
-  `password` VARCHAR(255) NOT NULL,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE IF NOT EXISTS \`usuarios\` (
+  \`id\` INT AUTO_INCREMENT PRIMARY KEY,
+  \`nombre\` VARCHAR(255) NOT NULL,
+  \`email\` VARCHAR(255) NOT NULL UNIQUE,
+  \`telefono\` VARCHAR(50),
+  \`contrasena\` VARCHAR(255) NOT NULL,
+  \`fecha_creacion\` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
-CREATE TABLE IF NOT EXISTS \
-`blocks` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `user_id` INT NOT NULL,
-  `block_index` INT NOT NULL,
-  `timestamp` DATETIME NOT NULL,
-  `data` TEXT NOT NULL,
-  `previous_hash` VARCHAR(64) NOT NULL,
-  `hash` VARCHAR(64) NOT NULL,
-  `alias` VARCHAR(255) DEFAULT '',
-  `status` VARCHAR(50) DEFAULT 'active',
-  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+CREATE TABLE IF NOT EXISTS \`bloques\` (
+  \`id\` INT AUTO_INCREMENT PRIMARY KEY,
+  \`id_usuario\` INT NOT NULL,
+  \`indice_cadena\` INT NOT NULL,
+  \`fecha_creacion\` DATETIME NOT NULL,
+  \`datos\` TEXT NOT NULL,
+  \`hash_anterior\` VARCHAR(64) NOT NULL,
+  \`hash\` VARCHAR(64) NOT NULL,
+  \`alias\` VARCHAR(255) DEFAULT '',
+  \`estado\` VARCHAR(50) DEFAULT 'activo',
+  FOREIGN KEY (\`id_usuario\`) REFERENCES \`usuarios\`(\`id\`) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
-CREATE TABLE IF NOT EXISTS \
-`tags` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `name` VARCHAR(100) NOT NULL UNIQUE
+CREATE TABLE IF NOT EXISTS \`etiquetas\` (
+  \`id\` INT AUTO_INCREMENT PRIMARY KEY,
+  \`nombre\` VARCHAR(100) NOT NULL UNIQUE
 ) ENGINE=InnoDB;
 
-CREATE TABLE IF NOT EXISTS \
-`block_tags` (
-  `block_id` INT NOT NULL,
-  `tag_id` INT NOT NULL,
-  PRIMARY KEY (`block_id`, `tag_id`),
-  FOREIGN KEY (`block_id`) REFERENCES `blocks`(`id`) ON DELETE CASCADE,
-  FOREIGN KEY (`tag_id`) REFERENCES `tags`(`id`) ON DELETE CASCADE
+CREATE TABLE IF NOT EXISTS \`bloque_etiquetas\` (
+  \`id_bloque\` INT NOT NULL,
+  \`id_etiqueta\` INT NOT NULL,
+  PRIMARY KEY (\`id_bloque\`, \`id_etiqueta\`),
+  FOREIGN KEY (\`id_bloque\`) REFERENCES \`bloques\`(\`id\`) ON DELETE CASCADE,
+  FOREIGN KEY (\`id_etiqueta\`) REFERENCES \`etiquetas\`(\`id\`) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
-CREATE TABLE IF NOT EXISTS \
-`tasks` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `block_id` INT NOT NULL,
-  `description` TEXT NOT NULL,
-  `status` VARCHAR(50) DEFAULT 'pending',
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (`block_id`) REFERENCES `blocks`(`id`) ON DELETE CASCADE
+CREATE TABLE IF NOT EXISTS \`tareas\` (
+  \`id\` INT AUTO_INCREMENT PRIMARY KEY,
+  \`id_bloque\` INT NOT NULL,
+  \`descripcion\` TEXT NOT NULL,
+  \`estado\` VARCHAR(50) DEFAULT 'pendiente',
+  \`fecha_creacion\` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (\`id_bloque\`) REFERENCES \`bloques\`(\`id\`) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
-CREATE TABLE IF NOT EXISTS \
-`changelogs` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `block_id` INT NOT NULL,
-  `user_id` INT NOT NULL,
-  `field_name` VARCHAR(100) NOT NULL,
-  `old_value` TEXT,
-  `new_value` TEXT,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (`block_id`) REFERENCES `blocks`(`id`) ON DELETE CASCADE,
-  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+CREATE TABLE IF NOT EXISTS \`registros_de_cambios\` (
+  \`id\` INT AUTO_INCREMENT PRIMARY KEY,
+  \`id_bloque\` INT NOT NULL,
+  \`id_usuario\` INT NOT NULL,
+  \`nombre_campo\` VARCHAR(100) NOT NULL,
+  \`valor_antiguo\` TEXT,
+  \`valor_nuevo\` TEXT,
+  \`fecha_creacion\` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (\`id_bloque\`) REFERENCES \`bloques\`(\`id\`) ON DELETE CASCADE,
+  FOREIGN KEY (\`id_usuario\`) REFERENCES \`usuarios\`(\`id\`) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
-CREATE TABLE IF NOT EXISTS \
-`media_files` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `block_id` INT NOT NULL,
-  `user_id` INT NOT NULL,
-  `file_name` VARCHAR(255) NOT NULL,
-  `file_path` VARCHAR(255) NOT NULL,
-  `mime_type` VARCHAR(100) NOT NULL,
-  `uploaded_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (`block_id`) REFERENCES `blocks`(`id`) ON DELETE CASCADE,
-  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+CREATE TABLE IF NOT EXISTS \`archivos_media\` (
+  \`id\` INT AUTO_INCREMENT PRIMARY KEY,
+  \`id_bloque\` INT NOT NULL,
+  \`id_usuario\` INT NOT NULL,
+  \`nombre_archivo\` VARCHAR(255) NOT NULL,
+  \`ruta_archivo\` VARCHAR(255) NOT NULL,
+  \`tipo_mime\` VARCHAR(100) NOT NULL,
+  \`subido_en\` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (\`id_bloque\`) REFERENCES \`bloques\`(\`id\`) ON DELETE CASCADE,
+  FOREIGN KEY (\`id_usuario\`) REFERENCES \`usuarios\`(\`id\`) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 "
 
 # Ejecutar los comandos SQL
 echo "Creando base de datos y usuario (si no existen)..."
-echo "NOTA: Se te podría pedir la contraseña de root de MySQL."
-mysql -u root -p -e "$SQL_CREATE_DB_AND_USER"
+mysql -u root -p"$MYSQL_ROOT_PASS" -e "$SQL_CREATE_DB_AND_USER"
 
 if [ $? -eq 0 ]; then
     echo "Base de datos y usuario configurados correctamente."
@@ -134,8 +146,9 @@ if [ $? -eq 0 ]; then
         echo "¡Éxito! Todas las tablas han sido creadas en la base de datos '$DB_NAME'."
         echo "--- Configuración de la base de datos finalizada ---"
     else
-        echo "Error: No se pudieron crear las tablas. Verifica los permisos del usuario '$DB_USER'."
+        echo "Error: No se pudieron crear las tablas. Verifica los permisos del usuario '$DB_USER' y la contraseña."
     fi
 else
     echo "Error: No se pudo crear la base de datos o el usuario. Verifica tu contraseña de root y los permisos de MySQL."
 fi
+

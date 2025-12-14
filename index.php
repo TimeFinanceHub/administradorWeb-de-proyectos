@@ -9,115 +9,108 @@ require_once 'vendor/autoload.php';
 require_once 'config/db.php';
 
 // Importar las clases de los controladores
-use App\Controllers\ProjectController;
-use App\Controllers\TaskController;
-use App\Controllers\ReportController;
-use App\Controllers\MediaController;
+use App\Controladores\ControladorProyecto;
+use App\Controladores\ControladorTarea;
+use App\Controladores\ControladorReporte;
+use App\Controladores\ControladorMedia;
 
 // 4. Determinar la Acción (Routing Básico)
-$action = $_GET['action'] ?? 'home';
+$accion = $_GET['action'] ?? 'inicio';
 
 // 5. Determinar qué Controlador y qué Método usar
-$controllerInstance = null;
-$method = '';
+$instanciaControlador = null;
+$metodo = '';
 
-// --- Lógica para Tareas (Módulo G013) ---
-if (strpos($action, 'task') !== false) {
-    $controllerInstance = new TaskController($pdo);
+// --- Lógica para Tareas ---
+if (strpos($accion, 'task') !== false) {
+    $instanciaControlador = new ControladorTarea($pdo);
     
-    switch ($action) {
+    switch ($accion) {
         case 'tasks':
-            $method = 'showTasks';
+            $metodo = 'mostrarTareas';
             break;
         case 'add_task':
-            $method = 'add';
+            $metodo = 'agregar';
             break;
         case 'update_task_status':
-            $method = 'updateStatus';
+            $metodo = 'actualizarEstado';
             break;
-        case 'delete_task': // <--- ¡Esta línea ahora está protegida!
-            $method = 'delete';
+        case 'delete_task':
+            $metodo = 'eliminar';
             break;
         default:
-            // Si es una acción de tarea desconocida, volver al dashboard
-            $method = 'index'; 
-            $controllerInstance = new ProjectController($pdo); 
+            $metodo = 'inicio'; 
+            $instanciaControlador = new ControladorProyecto($pdo); 
             break;
     }
-} elseif ($action === 'reportes') { 
-    $controllerInstance = new ReportController($pdo);
-    $method = 'index';
-} elseif ($action === 'upload_media' || $action === 'process_upload' || $action === 'delete_media') { // <-- NUEVO BLOQUE MEDIA HUB
-    $controllerInstance = new MediaController($pdo);
+} elseif ($accion === 'reportes') { 
+    $instanciaControlador = new ControladorReporte($pdo);
+    $metodo = 'inicio';
+} elseif ($accion === 'upload_media' || $accion === 'process_upload' || $accion === 'delete_media') {
+    $instanciaControlador = new ControladorMedia($pdo);
     
-    switch ($action) {
+    switch ($accion) {
         case 'upload_media':
-            $method = 'showUploadForm'; // Muestra la vista con el formulario
+            $metodo = 'mostrarFormularioSubida';
             break;
         case 'process_upload':
-            $method = 'upload'; // Maneja la subida POST
+            $metodo = 'subir';
             break;
-        case 'delete_media': // <--- ¡DEBE ESTAR ESTO!
-            $method = 'deleteFile'; // <-- O el nombre del método que uses
+        case 'delete_media':
+            $metodo = 'eliminarArchivo';
             break;
         default:
-            // Asegurarse de manejar el caso por defecto si la acción no coincide
-            $method = 'showUploadForm'; 
+            $metodo = 'mostrarFormularioSubida'; 
             break;
     }
-// --- Lógica para Proyectos y Autenticación (Módulo G012/Auth) ---
+// --- Lógica para Proyectos y Autenticación ---
 } else {
-    $controllerInstance = new ProjectController($pdo);
+    $instanciaControlador = new ControladorProyecto($pdo);
     
-    switch ($action) {
+    switch ($accion) {
         case 'logout':
-            $method = 'logout';
+            $metodo = 'cerrarSesion';
             break;
         case 'register':
+            $metodo = 'registrar';
+            break;
         case 'login':
-            // Estas acciones dependen del método POST, que se maneja dentro del call_user_func
-            $method = $action;
+            $metodo = 'iniciarSesion';
             break;
         case 'add_project':
-            $method = 'addProject';
+            $metodo = 'agregarProyecto';
             break;
         case 'delete':
-            $method = 'softDelete';
+            $metodo = 'eliminarProyecto';
             break;
         case 'edit':
-            $method = 'editMetadata';
+            $metodo = 'editarMetadatos';
             break;
         case 'update_metadata':
-            $method = 'processEdit';
+            $metodo = 'procesarEdicion';
             break;
         case 'reset_chain':
-            $method = 'resetChain';
+            $metodo = 'reiniciarCadena';
             break;
         default:
-            $method = 'index'; // 'home' o acción por defecto
+            $metodo = 'inicio';
             break;
     }
 }
 
 
-if ($controllerInstance && $method && method_exists($controllerInstance, $method)) {
+if ($instanciaControlador && $metodo && method_exists($instanciaControlador, $metodo)) {
 
-$params = [];
-// Asignar los parámetros para los métodos que los necesiten
-if ($method === 'register' || $method === 'login' || $method === 'addProject' || $method === 'upload') {
-$params[] = $_POST;
-}
+    $parametros = [];
+    if ($metodo === 'registrar' || $metodo === 'iniciarSesion' || $metodo === 'agregarProyecto' || $metodo === 'subir') {
+        $parametros[] = $_POST;
+    }
 
- // 1. Llamar al método del controlador
- call_user_func_array([$controllerInstance, $method], $params);
+    call_user_func_array([$instanciaControlador, $metodo], $parametros);
     
-    // 2. FORZAR LA TERMINACIÓN
-    // Si la llamada no terminó con un redirect/exit() (lo cual es el caso si el header falla),
-    // terminamos aquí para evitar caer en el fallback del ProjectController::index().
-    exit(); // <--- ¡AÑADE ESTA LÍNEA CRÍTICA!
+    exit();
     
 } else {
-// Si no se encuentra el controlador/método, forzar al inicio de sesión o dashboard
-$controllerInstance = new ProjectController($pdo);
-$controllerInstance->index();
+    $instanciaControlador = new ControladorProyecto($pdo);
+    $instanciaControlador->inicio();
 }

@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RG012 - Dashboard</title>
+    <title>RG012 - Panel de Control</title>
     
     <link rel="icon" type="image/png" href="img-logo/favicon-96x96.png" sizes="96x96" />
 <link rel="icon" type="image/svg+xml" href="img-logo/favicon.svg" />
@@ -151,30 +151,30 @@
     <h1>Editar Metadatos del Proyecto</h1>
 </header>
 
-<?php if (!empty($message)): ?><p class="alert"><?= htmlspecialchars($message) ?></p><?php endif; ?>
+<?php if (!empty($mensaje)): ?><p class="alert"><?= htmlspecialchars($mensaje) ?></p><?php endif; ?>
 
 <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 8px;">
     
-    <h2>Proyecto #<?= $block['block_index'] ?></h2>
+    <h2>Proyecto #<?= $bloque['indice_cadena'] ?></h2>
     
     <div style="background: #f0f0f0; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
-        <p><strong>Hash Criptográfico Original:</strong> <span style="font-size: 0.9em; word-break: break-all;"><?= $block['hash'] ?></span></p>
-        <p><strong>Contenido Inmutable (Data):</strong></p>
-        <textarea rows="4" disabled style="background:#ddd; cursor: not-allowed;"><?= htmlspecialchars($block['data']) ?></textarea>
+        <p><strong>Hash Criptográfico Original:</strong> <span style="font-size: 0.9em; word-break: break-all;"><?= $bloque['hash'] ?></span></p>
+        <p><strong>Contenido Inmutable (Datos):</strong></p>
+        <textarea rows="4" disabled style="background:#ddd; cursor: not-allowed;"><?= htmlspecialchars($bloque['datos']) ?></textarea>
     </div>
 
     <form action="index.php?action=update_metadata" method="POST">
-    <input type="hidden" name="block_id" value="<?= htmlspecialchars($block['id']) ?>">
+    <input type="hidden" name="block_id" value="<?= htmlspecialchars($bloque['id']) ?>">
         
-        <label for="alias">Alias / Nombre visible (R012):</label>
-        <input type="text" id="alias" name="alias" value="<?= htmlspecialchars($block['alias']) ?>" placeholder="Asigna un nombre de proyecto más amigable" required>
+        <label for="alias">Alias / Nombre visible:</label>
+        <input type="text" id="alias" name="alias" value="<?= htmlspecialchars($bloque['alias']) ?>" placeholder="Asigna un nombre de proyecto más amigable" required>
 
         <div style="margin-bottom: 20px;">
-    <label for="status">Estatus del Proyecto (R012):</label>
+    <label for="status">Estado del Proyecto:</label>
     <select name="status" id="status" style="width: 100%; padding: 10px;">
-        <?php foreach ($available_statuses as $status): ?> <option value="<?= htmlspecialchars($status) ?>"
-                    <?= $block['status'] === $status ? 'selected' : '' ?>>
-                <?= ucfirst(str_replace('_', ' ', $status)) ?>
+        <?php foreach ($estadosDisponibles as $estado): ?> <option value="<?= htmlspecialchars($estado) ?>"
+                    <?= $bloque['estado'] === $estado ? 'selected' : '' ?>>
+                <?= ucfirst(str_replace('_', ' ', $estado)) ?>
             </option>
         <?php endforeach; ?>
     </select>
@@ -182,33 +182,33 @@
 
 <div style="margin-bottom: 20px;">
     <label for="tags">Etiquetas (separadas por comas, ej: MVP, Backend, UI):</label>
-    <textarea name="tags" id="tags" rows="2" placeholder="Ej: Backend, SQL, API" required><?= htmlspecialchars($current_tags_string) ?></textarea>
+    <textarea name="tags" id="tags" rows="2" placeholder="Ej: Backend, SQL, API" required><?= htmlspecialchars($cadenaEtiquetasActuales) ?></textarea>
 </div>
         
         <button type="submit" style="background: var(--accent-color); margin-top: 20px;">Guardar Metadatos</button>
-        <a href="index.php" style="display: block; text-align: center; margin-top: 10px; color: var(--primary-color);">Cancelar y Volver al Dashboard</a>
+        <a href="index.php" style="display: block; text-align: center; margin-top: 10px; color: var(--primary-color);">Cancelar y Volver al Panel de Control</a>
     </form>
 </div>
 </div>
 
 <h3 style="margin-top: 40px; border-bottom: 2px solid #eee; padding-bottom: 10px; color: #7f8c8d;">
-    <span style="color: #3498db;">G014</span> - Historial de Cambios (Bitácora)
+    Historial de Cambios (Bitácora)
 </h3>
 
-<?php if (empty($changelog)): ?>
+<?php if (empty($registroDeCambios)): ?>
     <p style="text-align: center; color: #95a5a6;">No hay registros de cambios para este proyecto inmutable.</p>
 <?php else: ?>
     <div style="max-height: 400px; overflow-y: auto;">
-        <?php foreach ($changelog as $log): ?>
+        <?php foreach ($registroDeCambios as $registro): ?>
             <div style="background: #fdf6e3; padding: 10px; border-left: 4px solid #f39c12; margin-bottom: 10px; border-radius: 4px; font-size: 0.9em;">
                 <p style="margin: 0 0 5px 0; font-weight: bold;">
-                    [<?= date('Y-m-d H:i:s', strtotime($log['created_at'])) ?>] por <?= htmlspecialchars($log['user_name']) ?>
+                    [<?= date('Y-m-d H:i:s', strtotime($registro['fecha_creacion'])) ?>] por <?= htmlspecialchars($registro['nombre_usuario']) ?>
                 </p>
                 <p style="margin: 0;">
-                    Campo: <strong><?= ucfirst($log['field_name']) ?></strong>
+                    Campo: <strong><?= ucfirst($registro['nombre_campo']) ?></strong>
                     <br>
-                    De: <span style="color: #c0392b;">"<?= htmlspecialchars($log['old_value']) ?>"</span> 
-                    A: <span style="color: #27ae60;">"<?= htmlspecialchars($log['new_value']) ?>"</span>
+                    De: <span style="color: #c0392b;">"<?= htmlspecialchars($registro['valor_antiguo']) ?>"</span> 
+                    A: <span style="color: #27ae60;">"<?= htmlspecialchars($registro['valor_nuevo']) ?>"</span>
                 </p>
             </div>
         <?php endforeach; ?>

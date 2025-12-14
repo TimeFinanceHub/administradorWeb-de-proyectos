@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>G016 - Subida de Archivos</title>
+    <title>Subida de Archivos</title>
     <style>
         :root {
             --primary-color: #2c3e50;
@@ -35,46 +35,46 @@
 
 <div class="container">
     <header>
-        <h1><span style="color: var(--orange-color);">G016</span> - Media Hub</h1>
-        <p>Archivos para el Proyecto R012 ID: <?= htmlspecialchars($block_id) ?></p>
+        <h1>Centro de Archivos</h1>
+        <p>Archivos para el Proyecto ID: <?= htmlspecialchars($id_bloque) ?></p>
     </header>
 
-    <a href="index.php" class="back-link">← Volver al Dashboard</a>
+    <a href="index.php" class="back-link">← Volver al Panel de Control</a>
     
-    <?php if (!empty($message)): ?>
-        <p class="<?= (strpos($message, 'Error') !== false) ? 'alert' : 'success' ?>"><?= htmlspecialchars($message) ?></p>
+    <?php if (!empty($mensaje)): ?>
+        <p class="<?= (strpos($mensaje, 'Error') !== false) ? 'alert' : 'success' ?>"><?= htmlspecialchars($mensaje) ?></p>
     <?php endif; ?>
 
     <div style="background: #fff8e8; padding: 20px; border-radius: 8px; border: 1px solid var(--orange-color);">
         <h4 style="margin-top:0; color: var(--orange-color);">📤 Subir Nuevo Archivo (.png, .mp4)</h4>
         
         <form action="index.php?action=process_upload" method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="block_id" value="<?= htmlspecialchars($block_id) ?>">
+            <input type="hidden" name="block_id" value="<?= htmlspecialchars($id_bloque) ?>">
             
             <input type="file" name="media_file" accept="image/png, video/mp4" required>
             
-            <button type="submit">Subir Archivo a G016</button>
+            <button type="submit">Subir Archivo</button>
         </form>
     </div>
 
     <div class="file-list">
-        <h4 style="color: var(--primary-color);">📂 Archivos Asociados (<?= count($media_files) ?>)</h4>
+        <h4 style="color: var(--primary-color);">📂 Archivos Asociados (<?= count($archivos_media) ?>)</h4>
         
-        <?php if (empty($media_files)): ?>
+        <?php if (empty($archivos_media)): ?>
             <p style="text-align: center; color: #7f8c8d;">No hay archivos multimedia subidos para este proyecto.</p>
         <?php else: ?>
-            <?php foreach ($media_files as $file): ?>
+            <?php foreach ($archivos_media as $archivo): ?>
                 <div class="file-item">
                     <div class="file-name-info">
-                        <strong><?= htmlspecialchars($file['file_name']) ?></strong> 
-                        <span style="font-size: 0.8em; color: #7f8c8d;">(<?= htmlspecialchars($file['mime_type']) ?>)</span>
+                        <strong><?= htmlspecialchars($archivo['nombre_archivo']) ?></strong> 
+                        <span style="font-size: 0.8em; color: #7f8c8d;">(<?= htmlspecialchars($archivo['tipo_mime']) ?>)</span>
                         <span style="display: block; font-size: 0.7em; color: #a0a0a0;">
-                            Subido: <?= date('Y-m-d H:i', strtotime($file['uploaded_at'])) ?>
+                            Subido: <?= date('Y-m-d H:i', strtotime($archivo['subido_en'])) ?>
                         </span>
                     </div>
                     <div class="file-actions">
-                        <a href="<?= htmlspecialchars($file['file_path']) ?>" target="_blank" style="color: var(--blue-color);">[Ver]</a>
-                        <a href="index.php?action=delete_media&id=<?= $file['id'] ?>&block_id=<?= $block_id ?>"
+                        <a href="<?= htmlspecialchars($archivo['ruta_archivo']) ?>" target="_blank" style="color: var(--blue-color);">[Ver]</a>
+                        <a href="index.php?action=delete_media&id=<?= $archivo['id'] ?>&block_id=<?= $id_bloque ?>"
                            onclick="return confirm('¿Seguro que quieres eliminar este archivo?');">
                            [Eliminar]
                         </a>

@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>RG012 - Reportes</title>
+    <title>Panel de Control - Reportes</title>
     <style>
         :root {
             --primary-color: #2c3e50;
@@ -30,19 +30,19 @@
 
 <div class="container">
     <header>
-        <h1><span style="color: var(--blue-color);">G015</span> - Dashboard de Reportes</h1>
-        <p>Análisis estadístico de la Cadena R012</p>
+        <h1>Panel de Control de Reportes</h1>
+        <p>Análisis estadístico de la Cadena de Proyectos</p>
     </header>
     
-    <a href="index.php" class="back-link">← Volver al Dashboard de Proyectos</a>
+    <a href="index.php" class="back-link">← Volver al Panel de Control de Proyectos</a>
 
     <h2 style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-top: 40px;">✅ Progreso Global de Tareas</h2>
     <div style="background: #e6fff1; padding: 20px; border-radius: 8px;">
-        <h4>Progreso: <?= $progress['progress'] ?>% Completado</h4>
-        <p>Tareas Completadas: <?= $progress['completed'] ?> de <?= $progress['total'] ?></p>
+        <h4>Progreso: <?= $progreso['progreso'] ?>% Completado</h4>
+        <p>Tareas Completadas: <?= $progreso['completadas'] ?> de <?= $progreso['total'] ?></p>
         <div class="progress-bar-container">
-            <div class="progress-bar" style="width: <?= $progress['progress'] ?>%;">
-                <?= $progress['progress'] ?>%
+            <div class="progress-bar" style="width: <?= $progreso['progreso'] ?>%;">
+                <?= $progreso['progreso'] ?>%
             </div>
         </div>
     </div>
@@ -51,19 +51,19 @@
     <div class="stat-grid">
         <div class="stat-card" style="border-bottom: 4px solid var(--accent-color);">
             <h4>Activo</h4>
-            <p style="color: var(--accent-color);"><?= $stats['active'] ?></p>
+            <p style="color: var(--accent-color);"><?= $estadisticas['activo'] ?></p>
         </div>
         <div class="stat-card" style="border-bottom: 4px solid orange;">
             <h4>En Progreso</h4>
-            <p style="color: orange;"><?= $stats['in_progress'] ?></p>
+            <p style="color: orange;"><?= $estadisticas['en_progreso'] ?></p>
         </div>
         <div class="stat-card" style="border-bottom: 4px solid var(--blue-color);">
             <h4>Completado</h4>
-            <p style="color: var(--blue-color);"><?= $stats['completed'] ?></p>
+            <p style="color: var(--blue-color);"><?= $estadisticas['completado'] ?></p>
         </div>
         <div class="stat-card" style="border-bottom: 4px solid #7f8c8d;">
             <h4>Archivado</h4>
-            <p style="color: #7f8c8d;"><?= $stats['archived'] ?></p>
+            <p style="color: #7f8c8d;"><?= $estadisticas['archivado'] ?></p>
         </div>
     </div>
     

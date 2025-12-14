@@ -1,12 +1,16 @@
 {
-    "name": "your-vendor/admin-of-pjs",
-    "description": "A simple project management system using a blockchain concept.",
+    "name": "rg-glez-tfh-syntax-sanctuary/admin-of-pjs",
+    "description": "Un sistema simple de gestión de proyectos usando un concepto de blockchain.",
     "type": "project",
     "license": "MIT",
     "authors": [
         {
-            "name": "Your Name",
-            "email": "your.email@example.com"
+            "name": "Ramiro G Glez.",
+            "email": "ramirogglez31@gmail.com"
+        },
+        {
+            "name": "Mostly PHP Software",
+            "email": "mostlyphpsoftware@gmail.com"
         }
     ],
     "require": {
@@ -16,7 +20,8 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "src/"
+            "App\\Controladores\\": "src/controladores/",
+            "App\\Modelos\\": "src/modelos/"
         }
     }
 }
