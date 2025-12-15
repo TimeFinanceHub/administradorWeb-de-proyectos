@@ -23,5 +23,7 @@
             "App\\Controladores\\": "src/controladores/",
             "App\\Modelos\\": "src/modelos/"
         }
-    }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
 }
