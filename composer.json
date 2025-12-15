@@ -1,6 +1,6 @@
 {
     "name": "rg-glez-tfh-syntax-sanctuary/admin-of-pjs",
-    "description": "Un sistema simple de gestión de proyectos usando un concepto de blockchain.",
+    "description": "A simple web-based project management system utilizing a blockchain-like concept.",
     "type": "project",
     "license": "MIT",
     "authors": [
@@ -23,6 +23,9 @@
             "App\\Controladores\\": "src/controladores/",
             "App\\Modelos\\": "src/modelos/"
         }
+    },
+    "scripts": {
+        "serve": "php -S localhost:8000 -t ."
     },
     "minimum-stability": "stable",
     "prefer-stable": true
