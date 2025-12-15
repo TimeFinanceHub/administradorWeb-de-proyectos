@@ -27,6 +27,6 @@
     "scripts": {
         "serve": "php -S localhost:8000 -t ."
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "prefer-stable": true
 }
